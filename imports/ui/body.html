@@ -1,0 +1,178 @@
+<body>
+  <div class="ui fluid container">
+    <div class="ui grid">
+      <div class="one wide column"></div>
+      <div class="fourteen wide column">
+        <h2 class="ui header">
+        <img class="ui image" src="https://www.bekaert.com//-/media/Images/ADMIN/Logos/Bekaert-Logo/Logo-bekaert-better-together-CYAN-RGB1.JPG?h=220&w=532">
+        <div class="big content">
+          Bekaert Lipetsk trucks logistics
+        </div>
+        </h2>
+      </div>
+    </div>
+    <div class="ui grid">
+      <div class="one wide column"></div>
+      <div class="one wide column">
+        {{> loginButtons}}
+      </div>
+      <div class="twelve wide column">
+        <div class="ui top attached tabular menu">
+          <a class="item active" data-tab="new-shipment">Add new <div class="ui green circular label">+</div></a>
+          <a class="item" data-tab="shipment-ontheway">On the way<div class="ui teal circular label">{{count_ontheway}}</div></a>
+          <a class="item" data-tab="shipment-arrived">Arrived<div class="ui blue circular label">{{count_arrived}}</div></a>
+          <a class="item" data-tab="shipment-entered">Waiting loading / unloading<div class="ui violet circular label">{{count_entered}}</div></a>
+          <a class="item" data-tab="shipment-released">Waiting documents<div class="ui purple  circular label">{{count_released}}</div></a>
+          <a class="item" data-tab="shipment-leaving">Leaving<div class="ui pink circular label">{{count_leaving}}</div></a>
+          <a class="item" data-tab="shipment-archived">Archive</a>
+        </div>
+        <!-- Form for created but not arrived shipments    -->
+        <div class="ui bottom attached tab segment active" data-tab="new-shipment">
+          {{> shipmentDetails button_add=1}}
+        </div>
+        <!--  -->
+        <div class="ui bottom attached tab segment" data-tab="shipment-ontheway">
+          {{> TruckTable header="Trucks on the way" shipments=shipments_created button_arrived=1 button_cancel=1}}
+        </div>
+        <!-- Form for arrived shipments    -->
+        <div class="ui bottom attached tab segment" data-tab="shipment-arrived">
+          {{> TruckTable header="Arrived trucks" shipments=shipments_arrived button_entered=1}}
+        </div>
+        <!-- Form for entered trucks    -->
+        <div class="ui bottom attached tab segment" data-tab="shipment-entered">
+          {{> TruckTable header="Trucks waiting loading" shipments=shipments_waiting_loading button_loaded=1}}
+          {{> TruckTable header="Trucks waiting unloading" shipments=shipments_waiting_unloading button_unloaded=1}}
+        </div>
+        <!-- Form for entered trucks    -->
+        <div class="ui bottom attached tab segment" data-tab="shipment-released">
+          {{> TruckTable header="Drivers waiting TC docs" shipments=shipments_waiting_docs_TC button_documented=1}}
+          {{> TruckTable header="Drivers waiting DRX docs" shipments=shipments_waiting_docs_DRX button_documented=1}}
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="shipment-leaving">
+          {{> TruckTable header="Trucks leaving the plant" shipments=shipments_leaving button_left=1}}
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="shipment-archived">
+          {{> TruckTable header="Archived shipments" shipments=shipments_archived}}
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<!--  -->
+<!--  -->
+<!-- template for each table -->
+<template name="TruckTable">
+<table class="ui table  ">
+  <thead>
+    <tr >
+      <th colspan=5>
+        <div class="ui big label">{{header}}</div>
+      </th>
+    </tr>
+    <tr>
+      <th>Type</th>
+      <th>Plate</th>
+      <th>Driver</th>
+      <th>Comment</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each shipments}}
+    <tr>
+      {{> shipment}}
+      <td align="left">
+        {{#if ../button_arrived}}
+        <button class="shipment-arrived ui small green button"><i class="checkmark box icon"></i>Mark arrived</button><br>
+        {{/if}}
+        {{#if ../button_cancel}}
+        <button class="shipment-delete ui small red button"><i class="trash icon"></i>Remove</button><br>
+        {{/if}}
+        {{#if ../button_entered}}
+        <button class="shipment-entered ui small green button"><i class="checkmark box icon"></i>Mark entered</button><br>
+        {{/if}}
+        {{#if ../button_loaded}}
+        <button class="shipment-loaded ui small green button"><i class="checkmark box icon"></i>Mark loaded</button><br>
+        {{/if}}
+        {{#if ../button_unloaded}}
+        <button class="shipment-unloaded ui small green button"><i class="checkmark box icon"></i>Mark unloaded</button><br>
+        {{/if}}
+        {{#if ../button_documented}}
+        <button class="shipment-documented ui small green button"><i class="checkmark box icon"></i>Mark documented</button><br>
+        {{/if}}
+        {{#if ../button_left}}
+        <button class="shipment-left ui small green button"><i class="checkmark box icon"></i>Mark left</button><br>
+        {{/if}}
+      </td>
+    </tr>
+    {{else}}
+    <tr><td>No trucks here!</td></tr>
+    {{/each}}
+  </tbody>
+</table>
+</template>
+<!--  -->
+<!--  -->
+<!-- Template for each truck -->
+<template name="shipment">
+<td class="openShipment" data={{_id}}>{{shipment_type}}</td>
+<td class="openShipment" data={{_id}}>{{truck_plate}}</td>
+<td class="openShipment" data={{_id}}>{{driver_name}}</td>
+<td class="openShipment" data={{_id}}>{{text}}{{history.left.time}}</td>
+<div id={{_id}} class="ui modal">
+  <div class="content">
+    {{> shipmentDetails show_history=1}}
+  </div>
+  <div class="actions">
+    <div class="ui button cancel">Cancel</div>
+    <!-- <div class="ui button ok">OK</div> -->
+  </div>
+</div>
+</template>
+<!--  -->
+<!--  -->
+<!-- template for details of shipment -->
+<template name="shipmentDetails">
+<div class="ui grid">
+  <div class="eight wide column">
+    <form class="new-shipment ui form">
+      <div class="field">
+        <select class="ui search dropdown" name="sh_type" value={{shipment_type}}>
+          <option value="">Select...</option>
+          <option value="WR">Wire rod</option>
+          <option value="ISC_container">ISC in container</option>
+          <option value="TC_truck">Tire cord in truck</option>
+          <option value="TC_container">Tire cord in container</option>
+          <option value="DRX_truck">Dramix in truck</option>
+          <option value="DRX_container">Dramix in container</option>
+          <option value="Other">Other</option>
+        </select></div>
+        <br>
+        <div class="field"><div class="ui labeled fluid input"><div class="ui label">Plate:</div><input class="ui input" type="text" name="plate" placeholder="Type  here..." value={{../truck_plate}} /></div></div>
+        <br>
+        <div class="field"><div class="ui labeled fluid input"><div class="ui label">Driver:</div><input class="ui input" type="text" name="driver" placeholder="Type  here..." value={{../driver_name}} /></div></div>
+        <br>
+        <div class="field"><div class="ui labeled input"><div class="ui label">Comment:</div><input class="ui input" type="text" name="text" placeholder="Type  here..." value={{../text}} /></div></div>
+        <br>
+        {{#if button_add}}
+        <button class="ui big green button" type="submit"><i class="save icon"></i>Add</button>
+        {{/if}}
+      </form>
+    </div>
+    {{#if show_history}}
+    {{#with ../history}}
+    <div class="eight wide column">
+      <ul class="ui bulleted list">
+        <li>Created: {{created.time}}{{#unless created.time}} - {{/unless}}</li>
+        <li>Arrived: {{arrived.time}}{{#unless arrived.time}} - {{/unless}}</li>
+        <li>Entered: {{entered.time}}{{#unless entered.time}} - {{/unless}}</li>
+        <li>Loaded: {{loaded.time}}{{#unless loaded.time}} - {{/unless}}</li>
+        <li>Unloaded: {{unloaded.time}}{{#unless unloaded.time}} - {{/unless}}</li>
+        <li>Documented: {{documented.time}}{{#unless documented.time}} - {{/unless}}</li>
+        <li>Left: {{left.time}}{{#unless left.time}} - {{/unless}}</li>
+      </ul>
+    </div>
+    {{/with}}
+    {{/if}}
+  </div>
+  </template>
