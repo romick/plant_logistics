@@ -283,9 +283,6 @@ Template.body.events({
     },
 
     'click .openShipment' () {
-        // console.log(this);
-        console.log($('#' + this._id).contents());
-        console.log('#' + this._id);
         $('#' + this._id)
             .modal({
                 onDeny: function() {
