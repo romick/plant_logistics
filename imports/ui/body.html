@@ -18,8 +18,12 @@
       </div>
       <div class="twelve wide column">
         <div class="ui top attached tabular menu">
-          <a class="item active" data-tab="new-shipment">Add new <div class="ui green circular label">+</div></a>
-          <a class="item" data-tab="shipment-ontheway">On the way<div class="ui teal circular label">{{count_ontheway}}</div></a>
+
+          {{#if isInRole 'add-shipments'}}
+          <a class="item" data-tab="new-shipment">Add new <div class="ui green circular label">+</div></a>
+          {{/if}}
+
+          <a class="item active" data-tab="shipment-ontheway">On the way<div class="ui teal circular label">{{count_ontheway}}</div></a>
           <a class="item" data-tab="shipment-arrived">Arrived<div class="ui blue circular label">{{count_arrived}}</div></a>
           <a class="item" data-tab="shipment-entered">Waiting loading / unloading<div class="ui violet circular label">{{count_entered}}</div></a>
           <a class="item" data-tab="shipment-released">Waiting documents<div class="ui purple  circular label">{{count_released}}</div></a>
@@ -27,11 +31,15 @@
           <a class="item" data-tab="shipment-archived">Archive</a>
         </div>
         <!-- Form for created but not arrived shipments    -->
-        <div class="ui bottom attached tab segment active" data-tab="new-shipment">
+        
+        {{#if isInRole 'add-shipments'}}
+        <div class="ui bottom attached tab segment" data-tab="new-shipment">
           {{> shipmentDetails button_add=1}}
         </div>
+        {{/if}}
+
         <!--  -->
-        <div class="ui bottom attached tab segment" data-tab="shipment-ontheway">
+        <div class="ui bottom attached tab segment active" data-tab="shipment-ontheway">
           {{> TruckTable header="Trucks on the way" shipments=shipments_created button_arrived=1 button_cancel=1}}
         </div>
         <!-- Form for arrived shipments    -->
@@ -83,25 +91,45 @@
       {{> shipment}}
       <td align="left">
         {{#if ../button_arrived}}
-        <button class="shipment-arrived ui small green button"><i class="checkmark box icon"></i>Mark arrived</button><br>
+        {{#if isInRole 'mark-shipments-arrived'}}
+        <button class="shipment-arrived ui small green button"><i class="checkmark box icon"></i>Mark arrived</button>
         {{/if}}
+        {{/if}}
+
         {{#if ../button_cancel}}
-        <button class="shipment-delete ui small red button"><i class="trash icon"></i>Remove</button><br>
+        {{#if isInRole 'cancel-shipments'}}
+        <button class="shipment-delete ui small red button"><i class="trash icon"></i>Remove</button>
         {{/if}}
+        {{/if}}
+
+        {{#if isInRole 'mark-shipments-entered'}}
         {{#if ../button_entered}}
-        <button class="shipment-entered ui small green button"><i class="checkmark box icon"></i>Mark entered</button><br>
+        <button class="shipment-entered ui small green button"><i class="checkmark box icon"></i>Mark entered</button>
         {{/if}}
+        {{/if}}
+
+        {{#if isInRole 'mark-shipments-loaded'}}
         {{#if ../button_loaded}}
-        <button class="shipment-loaded ui small green button"><i class="checkmark box icon"></i>Mark loaded</button><br>
+        <button class="shipment-loaded ui small green button"><i class="checkmark box icon"></i>Mark loaded</button>
         {{/if}}
+        {{/if}}
+
+        {{#if isInRole 'mark-shipments-unloaded'}}
         {{#if ../button_unloaded}}
-        <button class="shipment-unloaded ui small green button"><i class="checkmark box icon"></i>Mark unloaded</button><br>
+        <button class="shipment-unloaded ui small green button"><i class="checkmark box icon"></i>Mark unloaded</button>
         {{/if}}
+        {{/if}}
+
+        {{#if isInRole 'mark-shipments-documented'}}
         {{#if ../button_documented}}
-        <button class="shipment-documented ui small green button"><i class="checkmark box icon"></i>Mark documented</button><br>
+        <button class="shipment-documented ui small green button"><i class="checkmark box icon"></i>Mark documented</button>
         {{/if}}
+        {{/if}}
+
+        {{#if isInRole 'mark-shipments-left'}}
         {{#if ../button_left}}
-        <button class="shipment-left ui small green button"><i class="checkmark box icon"></i>Mark left</button><br>
+        <button class="shipment-left ui small green button"><i class="checkmark box icon"></i>Mark left</button>
+        {{/if}}
         {{/if}}
       </td>
     </tr>

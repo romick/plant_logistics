@@ -26,3 +26,5 @@ kadira:flow-router
 kadira:blaze-layout
 accounts-ui
 accounts-password
+alanning:roles
+accounts-base

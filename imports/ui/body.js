@@ -6,6 +6,9 @@ import {
     Shipments
 } from '../api/shipments.js';
 
+// import {
+//     AccountsCommon
+// } from 'meteor/accounts-base';
 import './body.html';
 
 
@@ -297,8 +300,17 @@ Template.body.events({
             .modal('show');
     },
 });
-Template.body.onRendered(function() {
+
+function update_ui_hooks() {
+    // console.log("update_ui_hooks is running...");
     $('.menu .item').tab({});
-    $('select.dropdown').dropdown();
-    // $('select.dropdown').val($('select.dropdown').value())
-});
+    // $('select.dropdown').dropdown();
+    // $('select.dropdown').val($('select.dropdown').attr("value"))
+    // console.log($('select.dropdown').attr("value"));
+}
+
+Template.body.onRendered(update_ui_hooks);
+
+Template.shipmentDetails.onRendered(update_ui_hooks);
+
+// AccountsCommon.onLogin(update_ui_hooks);
