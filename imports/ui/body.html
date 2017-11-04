@@ -18,11 +18,9 @@
       </div>
       <div class="twelve wide column">
         <div class="ui top attached tabular menu">
-
           {{#if isInRole 'add-shipments'}}
           <a class="item" data-tab="new-shipment">Add new <div class="ui green circular label">+</div></a>
           {{/if}}
-
           <a class="item active" data-tab="shipment-ontheway">On the way<div class="ui teal circular label">{{count_ontheway}}</div></a>
           <a class="item" data-tab="shipment-arrived">Arrived<div class="ui blue circular label">{{count_arrived}}</div></a>
           <a class="item" data-tab="shipment-entered">Waiting loading / unloading<div class="ui violet circular label">{{count_entered}}</div></a>
@@ -37,7 +35,6 @@
           {{> shipmentDetails button_add=1}}
         </div>
         {{/if}}
-
         <!--  -->
         <div class="ui bottom attached tab segment active" data-tab="shipment-ontheway">
           {{> TruckTable header="Trucks on the way" shipments=shipments_created button_arrived=1 button_cancel=1}}
@@ -73,11 +70,12 @@
 <table class="ui table  ">
   <thead>
     <tr >
-      <th colspan=5>
+      <th colspan=6>
         <div class="ui big label">{{header}}</div>
       </th>
     </tr>
     <tr>
+      <th><i class="ui attach icon"></i></th>
       <th>Type</th>
       <th>Plate</th>
       <th>Driver</th>
@@ -95,37 +93,31 @@
         <button class="shipment-arrived ui small green button"><i class="checkmark box icon"></i>Mark arrived</button>
         {{/if}}
         {{/if}}
-
         {{#if ../button_cancel}}
         {{#if isInRole 'cancel-shipments'}}
         <button class="shipment-delete ui small red button"><i class="trash icon"></i>Remove</button>
         {{/if}}
         {{/if}}
-
         {{#if isInRole 'mark-shipments-entered'}}
         {{#if ../button_entered}}
         <button class="shipment-entered ui small green button"><i class="checkmark box icon"></i>Mark entered</button>
         {{/if}}
         {{/if}}
-
         {{#if isInRole 'mark-shipments-loaded'}}
         {{#if ../button_loaded}}
         <button class="shipment-loaded ui small green button"><i class="checkmark box icon"></i>Mark loaded</button>
         {{/if}}
         {{/if}}
-
         {{#if isInRole 'mark-shipments-unloaded'}}
         {{#if ../button_unloaded}}
         <button class="shipment-unloaded ui small green button"><i class="checkmark box icon"></i>Mark unloaded</button>
         {{/if}}
         {{/if}}
-
         {{#if isInRole 'mark-shipments-documented'}}
         {{#if ../button_documented}}
         <button class="shipment-documented ui small green button"><i class="checkmark box icon"></i>Mark documented</button>
         {{/if}}
         {{/if}}
-
         {{#if isInRole 'mark-shipments-left'}}
         {{#if ../button_left}}
         <button class="shipment-left ui small green button"><i class="checkmark box icon"></i>Mark left</button>
@@ -143,6 +135,11 @@
 <!--  -->
 <!-- Template for each truck -->
 <template name="shipment">
+<td class="openShipment">
+  {{#if attached_files}}
+  <i class="ui attach icon"></i>
+  {{/if}}
+</td>
 <td class="openShipment" data={{_id}}>{{shipment_type}}</td>
 <td class="openShipment" data={{_id}}>{{truck_plate}}</td>
 <td class="openShipment" data={{_id}}>{{driver_name}}</td>
@@ -162,7 +159,7 @@
 <!-- template for details of shipment -->
 <template name="shipmentDetails">
 <div class="ui grid">
-  <div class="eight wide column">
+  <div class="{{#if show_history}}eight{{else}}sixteen{{/if}} wide column">
     <form class="new-shipment ui form">
       <div class="field">
         <select class="ui search dropdown" name="sh_type" value={{shipment_type}}>
@@ -182,7 +179,14 @@
         <br>
         <div class="field"><div class="ui labeled input"><div class="ui label">Comment:</div><input class="ui input" type="text" name="text" placeholder="Type  here..." value={{../text}} /></div></div>
         <br>
+        {{#if show_history}}
+        {{#if ../attached_files}}
+        {{> fileList files=(selectImages ../attached_files)}}
+        {{/if}}
+        {{/if}}
+        
         {{#if button_add}}
+        {{> uploadForm}}
         <button class="ui big green button" type="submit"><i class="save icon"></i>Add</button>
         {{/if}}
       </form>
@@ -190,17 +194,82 @@
     {{#if show_history}}
     {{#with ../history}}
     <div class="eight wide column">
-      <ul class="ui bulleted list">
-        <li>Created: {{created.time}}{{#unless created.time}} - {{/unless}}</li>
-        <li>Arrived: {{arrived.time}}{{#unless arrived.time}} - {{/unless}}</li>
-        <li>Entered: {{entered.time}}{{#unless entered.time}} - {{/unless}}</li>
-        <li>Loaded: {{loaded.time}}{{#unless loaded.time}} - {{/unless}}</li>
-        <li>Unloaded: {{unloaded.time}}{{#unless unloaded.time}} - {{/unless}}</li>
-        <li>Documented: {{documented.time}}{{#unless documented.time}} - {{/unless}}</li>
-        <li>Left: {{left.time}}{{#unless left.time}} - {{/unless}}</li>
-      </ul>
+      <table class="ui table">
+        <thead>
+          <tr>
+            <th>action</th>
+            <th>time</th>
+            <th>user</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>created</td>
+            <td>{{created.time}}{{#unless created.time}}-{{/unless}}</td>
+            <td>{{created.user}}{{#unless created.user}}-{{/unless}}</td>
+          </tr>
+          <tr>
+            <td>arrived</td>
+            <td>{{arrived.time}}{{#unless arrived.time}}-{{/unless}}</td>
+            <td>{{arrived.user}}{{#unless arrived.user}}-{{/unless}}</td>
+          </tr>
+          <tr>
+            <td>entered</td>
+            <td>{{entered.time}}{{#unless entered.time}}-{{/unless}}</td>
+            <td>{{entered.user}}{{#unless entered.user}}-{{/unless}}</td>
+          </tr>
+          <tr>
+            <td>loaded</td>
+            <td>{{loaded.time}}{{#unless loaded.time}}-{{/unless}}</td>
+            <td>{{loaded.user}}{{#unless loaded.user}}-{{/unless}}</td>
+          </tr>
+          <tr>
+            <td>unloaded</td>
+            <td>{{unloaded.time}}{{#unless unloaded.time}}-{{/unless}}</td>
+            <td>{{unloaded.user}}{{#unless unloaded.user}}-{{/unless}}</td>
+          </tr>
+          <tr>
+            <td>documented</td>
+            <td>{{documented.time}}{{#unless documented.time}}-{{/unless}}</td>
+            <td>{{documented.user}}{{#unless documented.user}}-{{/unless}}</td>
+          </tr>
+          <tr>
+            <td>left</td>
+            <td>{{left.time}}{{#unless left.time}}-{{/unless}}</td>
+            <td>{{left.user}}{{#unless left.user}}-{{/unless}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     {{/with}}
     {{/if}}
   </div>
+  </template>
+  <!--  -->
+  <!--  -->
+  <!-- template to upload files -->
+  <template name="uploadForm">
+  {{> fileList files=(selectImages tempUploaded.list)}}
+  {{#with currentUpload}}
+  Uploading <b>{{file.name}}</b>:
+  <span id="progress">{{progress.get}}%</span>
+  {{else}}
+  <div class="field"><div class="ui labeled fluid input"><div class="ui label">Attach:</div><input id="fileInput" type="file" /></div></div>
+  {{/with}}
+  </template>
+  <!--  -->
+  <!--  -->
+  <!-- tmplate to show list of links to uploaded files -->
+  <template name="fileList">
+  <div class="ui list">
+    {{#each file in files}}
+    <div class="item">
+      <i class="ui image icon"></i>
+      <div class="content">
+        <a href={{file.path}}>{{file.name}}</a>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  <input type="hidden" name="attached_files" value="{{#each file in files}} {{file._id}}{{/each}}" />
   </template>
