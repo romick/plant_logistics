@@ -12,7 +12,7 @@ if (Meteor.isServer) {
                 'mark-shipments-unloaded',
                 'mark-shipments-documented',
                 'mark-shipments-left',
-                'cancel-shipments',
+                'mark-shipments-cancelled',
 
             ]
         }, {
@@ -21,7 +21,7 @@ if (Meteor.isServer) {
             roles: [
                 'add-shipments',
                 'mark-shipments-documented',
-                'cancel-shipments',
+                'mark-shipments-cancelled',
             ]
         }, {
             name: "julia.chukhno",

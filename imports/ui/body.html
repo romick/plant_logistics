@@ -37,27 +37,27 @@
         {{/if}}
         <!--  -->
         <div class="ui bottom attached tab segment active" data-tab="shipment-ontheway">
-          {{> TruckTable header="Trucks on the way" shipments=shipments_created button_arrived=1 button_cancel=1}}
+          {{> truckTable header="Trucks on the way" shipments=shipments_created actions=(availableActions 'ontheway') }}
         </div>
         <!-- Form for arrived shipments    -->
         <div class="ui bottom attached tab segment" data-tab="shipment-arrived">
-          {{> TruckTable header="Arrived trucks" shipments=shipments_arrived button_entered=1}}
+          {{> truckTable header="Arrived trucks" shipments=shipments_arrived actions=(availableActions 'arrived')}}
         </div>
         <!-- Form for entered trucks    -->
         <div class="ui bottom attached tab segment" data-tab="shipment-entered">
-          {{> TruckTable header="Trucks waiting loading" shipments=shipments_waiting_loading button_loaded=1}}
-          {{> TruckTable header="Trucks waiting unloading" shipments=shipments_waiting_unloading button_unloaded=1}}
+          {{> truckTable header="Trucks waiting loading" shipments=shipments_waiting_loading actions=(availableActions 'waiting_loading')}}
+          {{> truckTable header="Trucks waiting unloading" shipments=shipments_waiting_unloading actions=(availableActions 'waiting_unloading')}}
         </div>
         <!-- Form for entered trucks    -->
         <div class="ui bottom attached tab segment" data-tab="shipment-released">
-          {{> TruckTable header="Drivers waiting TC docs" shipments=shipments_waiting_docs_TC button_documented=1}}
-          {{> TruckTable header="Drivers waiting DRX docs" shipments=shipments_waiting_docs_DRX button_documented=1}}
+          {{> truckTable header="Drivers waiting TC docs" shipments=shipments_waiting_docs_TC actions=(availableActions 'released')}}
+          {{> truckTable header="Drivers waiting DRX docs" shipments=shipments_waiting_docs_DRX actions=(availableActions 'released')}}
         </div>
         <div class="ui bottom attached tab segment" data-tab="shipment-leaving">
-          {{> TruckTable header="Trucks leaving the plant" shipments=shipments_leaving button_left=1}}
+          {{> truckTable header="Trucks leaving the plant" shipments=shipments_leaving actions=(availableActions 'leaving')}}
         </div>
         <div class="ui bottom attached tab segment" data-tab="shipment-archived">
-          {{> TruckTable header="Archived shipments" shipments=shipments_archived}}
+          {{> truckTable header="Archived shipments" shipments=shipments_archived}}
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@
 <!--  -->
 <!--  -->
 <!-- template for each table -->
-<template name="TruckTable">
+<template name="truckTable">
 <table class="ui table  ">
   <thead>
     <tr >
@@ -84,52 +84,44 @@
     </tr>
   </thead>
   <tbody>
-    {{#each shipments}}
-    <tr>
-      {{> shipment}}
-      <td align="left">
-        {{#if ../button_arrived}}
-        {{#if isInRole 'mark-shipments-arrived'}}
-        <button class="shipment-arrived ui small green button"><i class="checkmark box icon"></i>Mark arrived</button>
-        {{/if}}
-        {{/if}}
-        {{#if ../button_cancel}}
-        {{#if isInRole 'cancel-shipments'}}
-        <button class="shipment-delete ui small red button"><i class="trash icon"></i>Remove</button>
-        {{/if}}
-        {{/if}}
-        {{#if isInRole 'mark-shipments-entered'}}
-        {{#if ../button_entered}}
-        <button class="shipment-entered ui small green button"><i class="checkmark box icon"></i>Mark entered</button>
-        {{/if}}
-        {{/if}}
-        {{#if isInRole 'mark-shipments-loaded'}}
-        {{#if ../button_loaded}}
-        <button class="shipment-loaded ui small green button"><i class="checkmark box icon"></i>Mark loaded</button>
-        {{/if}}
-        {{/if}}
-        {{#if isInRole 'mark-shipments-unloaded'}}
-        {{#if ../button_unloaded}}
-        <button class="shipment-unloaded ui small green button"><i class="checkmark box icon"></i>Mark unloaded</button>
-        {{/if}}
-        {{/if}}
-        {{#if isInRole 'mark-shipments-documented'}}
-        {{#if ../button_documented}}
-        <button class="shipment-documented ui small green button"><i class="checkmark box icon"></i>Mark documented</button>
-        {{/if}}
-        {{/if}}
-        {{#if isInRole 'mark-shipments-left'}}
-        {{#if ../button_left}}
-        <button class="shipment-left ui small green button"><i class="checkmark box icon"></i>Mark left</button>
-        {{/if}}
-        {{/if}}
-      </td>
-    </tr>
-    {{else}}
-    <tr><td>No trucks here!</td></tr>
-    {{/each}}
+    {{> shipmentsList}}
+    <!--
+      TODO: add grouping per expected arrival
+    {{> groupedShipmentsList groups=(selectUnique shipments 'expected_arrival_time') groupBy='expected_arrival_time' groupByText="Expected arrival date: "}}
+    -->
   </tbody>
 </table>
+</template>
+<!--  -->
+<!--  -->
+<!-- Template with list of shipments -->
+<template name="groupedShipmentsList">
+{{#each group in groups}}
+<tr>
+  <td colspan="6">{{groupByText}}{{group}}</td>
+</tr>
+{{> shipmentsList shipments=(filterShipments shipments groupBy group)}}
+{{/each}}
+</template>
+<!--  -->
+<!--  -->
+<!-- Template with list of shipments -->
+<template name="shipmentsList">
+{{#each shipments}}
+<tr>
+  {{> shipment}}
+  <td align="left">
+    {{#each action in ../actions}}
+    {{#if isAllowed action}}
+    <button class="shipment-action ui small {{#if isDangerous action}}red{{else}}green{{/if}} button" data={{action}}><i class="checkmark box icon"></i>Mark {{action}}</button>
+    {{/if}}
+    {{/each}}
+
+  </td>
+</tr>
+{{else}}
+<tr><td>No trucks here!</td></tr>
+{{/each}}
 </template>
 <!--  -->
 <!--  -->
@@ -178,6 +170,18 @@
         <div class="field"><div class="ui labeled fluid input"><div class="ui label">Driver:</div><input class="ui input" type="text" name="driver" placeholder="Type  here..." value={{../driver_name}} /></div></div>
         <br>
         <div class="field"><div class="ui labeled input"><div class="ui label">Comment:</div><input class="ui input" type="text" name="text" placeholder="Type  here..." value={{../text}} /></div></div>
+        <br>
+        <div class="field">
+          <div class="ui labeled input">
+            <div class="ui label">Expected arrival:</div>
+            <div class="ui calendar" id="expected_arrival_datepicker">
+              <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="Date/Time" name="expected_arrival_time" value={{../expected_arrival_time}}>
+              </div>
+            </div>
+          </div>
+        </div>
         <br>
         {{#if show_history}}
         {{#if ../attached_files}}
@@ -269,6 +273,7 @@
         <a href={{file.path}}>{{file.name}}</a>
       </div>
     </div>
+    <img class="ui small image" src={{fileURL file}}>
     {{/each}}
   </div>
   <input type="hidden" name="attached_files" value="{{#each file in files}} {{file._id}}{{/each}}" />

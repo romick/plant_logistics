@@ -1,4 +1,8 @@
 import {
+    Meteor
+} from 'meteor/meteor';
+
+import {
     Template
 } from 'meteor/templating';
 
@@ -10,6 +14,9 @@ import {
     Images
 } from '../api/attachments.js';
 
+// import {
+//     calendar
+// } from 'semantic-ui-calendar';
 
 import './upload.js';
 
@@ -202,8 +209,57 @@ Template.body.helpers({
             },
         });
     },
+    availableActions(current_status) {
+        if (current_status == "ontheway") {
+            return ["arrived", "cancelled"]
+        } else if (current_status == "arrived") {
+            return ["entered"]
+        } else if (current_status == "waiting_loading") {
+            return ["loaded"]
+        } else if (current_status == "waiting_unloading") {
+            return ["unloaded"]
+        } else if (current_status == "released") {
+            return ["documented"]
+        } else if (current_status == "leaving") {
+            return ["left"]
+        }
+    },
+
 
 });
+
+Template.truckTable.helpers({
+    selectUnique(collection, property) {
+        // console.log(collection.fetch());
+        // console.log(property)
+        return _.uniq(_.pluck(collection.fetch(), property));
+    },
+});
+
+Template.groupedShipmentsList.helpers({
+    filterShipments(collection, field, value) {
+        var selector = {};
+        selector[field] = value;
+        console.log(selector);
+        console.log(collection.fetch().find(selector));
+    },
+
+});
+
+Template.shipmentsList.helpers({
+    isAllowed(action) {
+        console.log(action);
+        const check = Roles.userIsInRole(Meteor.user()._id, "mark-shipments-" + action);
+        console.log(check);
+        return check;
+    },
+
+    isDangerous(action) {
+        return (action == "cancelled")
+    },
+
+});
+
 
 Template.body.events({
 
@@ -213,139 +269,31 @@ Template.body.events({
         event.preventDefault();
         // Get value from form element
         const target = event.target;
-        const text = target.text.value;
-        const truck_plate = target.plate.value;
-        const driver_name = target.driver.value;
-        const shipment_type = target.sh_type.value;
-        const attached_files = target.attached_files.value.split(" ").clean("");
-
-        // Insert a task into the collection
-        if (attached_files.length < 1) {
-            Shipments.insert({
-                text,
-                truck_plate,
-                driver_name,
-                shipment_type,
-                history: {
-                    created: {
-                        time: new Date(),
-                        user: Meteor.user().username,
-                    }
-                }
-            });
-        } else {
-            Shipments.insert({
-                text,
-                truck_plate,
-                driver_name,
-                shipment_type,
-                attached_files,
-                history: {
-                    created: {
-                        time: new Date(),
-                        user: Meteor.user().username,
-                    }
-                }
-            });
-
+        const sh = {
+            text: target.text.value,
+            truck_plate: target.plate.value,
+            driver_name: target.driver.value,
+            shipment_type: target.sh_type.value,
+            attached_files: target.attached_files.value.split(" ").clean(""),
+            expected_arrival_time: target.expected_arrival_time.value,
         }
 
+        Meteor.call('shipments.add', sh);
         // Clear form
         target.sh_type.value = '';
         target.text.value = '';
         target.plate.value = '';
         target.driver.value = '';
+        target.expected_arrival_time.value = '';
         target.attached_files.value = '';
         $('#fileInput').trigger($.Event('clean_tempUploaded', {}));
 
+
     },
 
-    'click .shipment-arrived' () {
-        Shipments.update(this._id, {
-            $set: {
-                "history.arrived": {
-                    "time": new Date(),
-                    "user": Meteor.user().username,
-                }
-            }
-        });
-    },
-    'click .shipment-entered' () {
-        Shipments.update(this._id, {
-            $set: {
-                "history.entered": {
-                    "time": new Date(),
-                    "user": Meteor.user().username,
-                }
-            }
-        });
-    },
-    'click .shipment-loaded' () {
-        Shipments.update(this._id, {
-            $set: {
-                "history.loaded": {
-                    "time": new Date(),
-                    "user": Meteor.user().username,
-                }
-            }
-        });
-    },
-    'click .shipment-unloaded' () {
-        Shipments.update(this._id, {
-            $set: {
-                "history.unloaded": {
-                    "time": new Date(),
-                    "user": Meteor.user().username,
-                }
-            }
-        });
-    },
-    'click .shipment-documented' () {
-        Shipments.update(this._id, {
-            $set: {
-                "history.documented": {
-                    "time": new Date(),
-                    "user": Meteor.user().username,
-                }
-            }
-        });
-    },
-    'click .shipment-left' () {
-        Shipments.update(this._id, {
-            $set: {
-                "history.left": {
-                    "time": new Date(),
-                    "user": Meteor.user().username,
-                }
-            }
-        });
-        Shipments.update(this._id, {
-            $set: {
-                "history.archived": {
-                    "time": new Date(),
-                    "user": Meteor.user().username,
-                }
-            }
-        });
-    },
-    'click .shipment-delete' () {
-        Shipments.update(this._id, {
-            $set: {
-                "history.cancelled": {
-                    "time": new Date(),
-                    "user": Meteor.user().username,
-                }
-            }
-        });
-        Shipments.update(this._id, {
-            $addToSet: {
-                "history.archived": {
-                    "time": new Date(),
-                    "user": Meteor.user().username,
-                }
-
-            }
-        });
+    'click .shipment-action' (e) {
+        Meteor.call('shipment.action', this._id, e.target.attributes.data.value);
+        // console.log();
     },
 
     'click .openShipment' () {
@@ -365,6 +313,7 @@ Template.body.events({
 
 function update_ui_hooks() {
     $('.menu .item').tab({});
+    // $('#expected_arrival_datepicker').calendar();
     // $('select.dropdown').dropdown();
     // $('select.dropdown').val($('select.dropdown').attr("value"))
     // console.log($('select.dropdown').attr("value"));
