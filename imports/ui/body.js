@@ -157,7 +157,6 @@ Template.body.helpers({
     shipments_created() {
         return select_created();
     },
-
     count_ontheway() {
         return select_created().count();
     },
@@ -228,6 +227,15 @@ Template.body.helpers({
 
 });
 
+
+Template.body.onCreated(function() {
+
+    // this.state = new ReactiveDict();
+    console.log("subscribed")
+    Meteor.subscribe('shipments.all');
+
+});
+
 Template.truckTable.helpers({
     selectUnique(collection, property) {
         // console.log(collection.fetch());
@@ -248,9 +256,9 @@ Template.groupedShipmentsList.helpers({
 
 Template.shipmentsList.helpers({
     isAllowed(action) {
-        console.log(action);
+        // console.log(action);
         const check = Roles.userIsInRole(Meteor.user()._id, "mark-shipments-" + action);
-        console.log(check);
+        // console.log(check);
         return check;
     },
 
@@ -323,6 +331,7 @@ Template.body.onRendered(update_ui_hooks);
 
 Template.shipmentDetails.helpers({
     selectImages(ids) {
+        console.log(ids);
         const imgs = Images.find({
             _id: {
                 $in: ids
@@ -341,4 +350,12 @@ Template.shipmentDetails.helpers({
 
 });
 
-Template.shipmentDetails.onRendered(update_ui_hooks);
+Template.shipmentDetails.onRendered(function() {
+    Meteor.subscribe('files.images.all');
+    console.log('subscribed to files.images.all');
+
+});
+Template.shipmentDetails.onRendered(function() {
+    update_ui_hooks();
+
+});

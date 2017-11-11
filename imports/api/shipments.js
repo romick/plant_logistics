@@ -72,3 +72,9 @@ Meteor.methods({
 
     },
 });
+
+if (Meteor.isServer) {
+    Meteor.publish('shipments.all', function() {
+        return Shipments.find();
+    });
+}
