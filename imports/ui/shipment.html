@@ -1,0 +1,23 @@
+<!--  -->
+<!--  -->
+<!-- Template for each truck -->
+<template name="shipment">
+<td class="openShipment">
+  {{#if attached_files}}
+  <i class="ui attach icon"></i>
+  {{/if}}
+</td>
+<td class="openShipment" data={{_id}}>{{shipment_type}}</td>
+<td class="openShipment" data={{_id}}>{{truck_plate}}</td>
+<td class="openShipment" data={{_id}}>{{driver_name}}</td>
+<td class="openShipment" data={{_id}}>{{text}}</td>
+<div id={{_id}} class="ui modal">
+  <div class="content">
+    {{> shipmentDetails show_history=1}}
+  </div>
+  <div class="actions">
+    <div class="ui button cancel">Cancel</div>
+    <!-- <div class="ui button ok">OK</div> -->
+  </div>
+</div>
+</template>

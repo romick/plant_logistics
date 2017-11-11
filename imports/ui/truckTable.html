@@ -1,0 +1,29 @@
+<!--  -->
+<!--  -->
+<!-- template for each table -->
+<template name="truckTable">
+<table class="ui table  ">
+  <thead>
+    <tr >
+      <th colspan=6>
+        <div class="ui big label">{{header}}</div>
+      </th>
+    </tr>
+    <tr>
+      <th><i class="ui attach icon"></i></th>
+      <th>Type</th>
+      <th>Plate</th>
+      <th>Driver</th>
+      <th>Comment</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{> shipmentsList}}
+    <!--
+    TODO: add grouping per expected arrival
+    {{> groupedShipmentsList groups=(selectUnique shipments 'expected_arrival_time') groupBy='expected_arrival_time' groupByText="Expected arrival date: "}}
+    -->
+  </tbody>
+</table>
+</template>

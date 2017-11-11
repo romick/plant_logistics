@@ -3,14 +3,11 @@ import {
 } from 'meteor/templating';
 
 import {
-    Shipments
-} from '../api/shipments.js';
-
-import {
     Images
 } from '../api/attachments.js';
 
-import './body.html';
+// import './body.html';
+import './uploadForm.html';
 
 function initTempUpload() {
     return {

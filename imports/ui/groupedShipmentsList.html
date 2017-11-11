@@ -1,0 +1,11 @@
+<!--  -->
+<!--  -->
+<!-- Template with list of shipments -->
+<template name="groupedShipmentsList">
+{{#each group in groups}}
+<tr>
+	<td colspan="6">{{groupByText}}{{group}}</td>
+</tr>
+{{> shipmentsList shipments=(filterShipments shipments groupBy group)}}
+{{/each}}
+</template>

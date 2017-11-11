@@ -1,0 +1,19 @@
+<!--  -->
+<!--  -->
+<!-- Template with list of shipments -->
+<template name="shipmentsList">
+{{#each shipments}}
+<tr>
+  {{> shipment}}
+  <td align="left">
+    {{#each action in ../actions}}
+    {{#if isAllowed action}}
+    <button class="shipment-action ui small {{#if isDangerous action}}red{{else}}green{{/if}} button" data={{action}}><i class="checkmark box icon"></i>Mark {{action}}</button>
+    {{/if}}
+    {{/each}}
+  </td>
+</tr>
+{{else}}
+<tr><td>No trucks here!</td></tr>
+{{/each}}
+</template>

@@ -1,0 +1,19 @@
+<!--  -->
+<!--  -->
+<!-- tmplate to show list of links to uploaded files -->
+<!-- parameters:  -->
+<!-- files=[] -->
+<template name="fileList">
+<div class="ui list">
+	{{#each file in files}}
+	<div class="item">
+		<i class="ui image icon"></i>
+		<div class="content">
+			<a href={{file.path}}>{{file.name}}</a>
+		</div>
+	</div>
+	<img class="ui small image" src={{fileURL file}}>
+	{{/each}}
+</div>
+<input type="hidden" name="attached_files" value="{{#each file in files}} {{file._id}}{{/each}}" />
+</template>

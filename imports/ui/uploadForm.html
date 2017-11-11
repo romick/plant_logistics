@@ -1,0 +1,12 @@
+<!--  -->
+<!--  -->
+<!-- template to upload files -->
+<template name="uploadForm">
+{{> fileList files=(selectImages tempUploaded.list)}}
+{{#with currentUpload}}
+Uploading <b>{{file.name}}</b>:
+<span id="progress">{{progress.get}}%</span>
+{{else}}
+<div class="field"><div class="ui labeled fluid input"><div class="ui label">Attach:</div><input id="fileInput" type="file" /></div></div>
+{{/with}}
+</template>

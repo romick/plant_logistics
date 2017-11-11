@@ -5,14 +5,9 @@ import {
 import {
     Template
 } from 'meteor/templating';
-
 import {
     Shipments
 } from '../api/shipments.js';
-
-import {
-    Images
-} from '../api/attachments.js';
 
 // import {
 //     calendar
@@ -223,6 +218,25 @@ Template.body.helpers({
             return ["left"]
         }
     },
+    menuContent() {
+        return [{
+            text: "Add new",
+            link: "/shipments/add",
+        }, {
+            text: "On the way",
+            link: "/shipments/ontheway"
+        }, {
+            text: "Arrived",
+            link: "/shipments/arrived"
+        }, {
+            text: "Waiting loading/unloading",
+            link: "/shipments/ontheway"
+        }, {
+
+        }, {
+
+        }, ];
+    },
 
 
 });
@@ -231,42 +245,11 @@ Template.body.helpers({
 Template.body.onCreated(function() {
 
     // this.state = new ReactiveDict();
-    console.log("subscribed")
     Meteor.subscribe('shipments.all');
 
 });
 
-Template.truckTable.helpers({
-    selectUnique(collection, property) {
-        // console.log(collection.fetch());
-        // console.log(property)
-        return _.uniq(_.pluck(collection.fetch(), property));
-    },
-});
 
-Template.groupedShipmentsList.helpers({
-    filterShipments(collection, field, value) {
-        var selector = {};
-        selector[field] = value;
-        console.log(selector);
-        console.log(collection.fetch().find(selector));
-    },
-
-});
-
-Template.shipmentsList.helpers({
-    isAllowed(action) {
-        // console.log(action);
-        const check = Roles.userIsInRole(Meteor.user()._id, "mark-shipments-" + action);
-        // console.log(check);
-        return check;
-    },
-
-    isDangerous(action) {
-        return (action == "cancelled")
-    },
-
-});
 
 
 Template.body.events({
@@ -328,34 +311,3 @@ function update_ui_hooks() {
 }
 
 Template.body.onRendered(update_ui_hooks);
-
-Template.shipmentDetails.helpers({
-    selectImages(ids) {
-        console.log(ids);
-        const imgs = Images.find({
-            _id: {
-                $in: ids
-            }
-        });
-        return imgs;
-    },
-
-    notEmpty(list) {
-        if (list.count() > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    },
-
-});
-
-Template.shipmentDetails.onRendered(function() {
-    Meteor.subscribe('files.images.all');
-    console.log('subscribed to files.images.all');
-
-});
-Template.shipmentDetails.onRendered(function() {
-    update_ui_hooks();
-
-});
