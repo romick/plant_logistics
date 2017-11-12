@@ -6,15 +6,18 @@
   <div class="{{#if show_history}}eight{{else}}sixteen{{/if}} wide column">
     <form class="new-shipment ui form">
       <div class="field">
-        <select class="ui search dropdown" name="sh_type" value={{shipment_type}}>
-          <option value="">Select...</option>
+        <select class="ui search dropdown" name="sh_type" value={{../shipment_type}}>
+          {{#each option in (shipmentTypesSelector ../shipment_type)}}
+          <option value={{option.type}} selected={{option.selected}}>{{option.text}}</option>
+          {{/each}}
+          <!--           <option value="">Select...</option>
           <option value="WR">Wire rod</option>
           <option value="ISC_container">ISC in container</option>
           <option value="TC_truck">Tire cord in truck</option>
           <option value="TC_container">Tire cord in container</option>
           <option value="DRX_truck">Dramix in truck</option>
           <option value="DRX_container">Dramix in container</option>
-          <option value="Other">Other</option>
+          <option value="Other">Other</option> -->
         </select></div>
         <br>
         <div class="field"><div class="ui labeled fluid input"><div class="ui label">Plate:</div><input class="ui input" type="text" name="plate" placeholder="Type  here..." value={{../truck_plate}} /></div></div>
@@ -58,13 +61,13 @@
           </tr>
         </thead>
         <tbody>
-    {{#each act in ../history}}
+          {{#each act in ../history}}
           <tr>
             <td>{{act.status}}</td>
             <td>{{act.time}}</td>
             <td>{{act.user}}</td>
           </tr>
-    {{/each}}
+          {{/each}}
         </tbody>
       </table>
     </div>

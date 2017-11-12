@@ -33,6 +33,42 @@ Template.shipmentDetails.helpers({
         }
     },
 
+    shipmentTypesSelector(preselected) {
+        preselected = preselected || "";
+        const list = [{
+            text: "Select...",
+            type: ""
+        }, {
+            text: "Wire rod",
+            type: "WR"
+        }, {
+            text: "ISC in container",
+            type: "ISC_container"
+        }, {
+            text: "Tire cord in truck",
+            type: "TC_truck"
+        }, {
+            text: "Tire cord in container",
+            type: "TC_container"
+        }, {
+            text: "Dramix in truck",
+            type: "DRX_truck"
+        }, {
+            text: "Dramix in container",
+            type: "DRX_container"
+        }, {
+            text: "Other",
+            type: "Other"
+        }, ];
+        _.map(list, function(option) {
+            if (option.type == preselected) {
+                option["selected"] = true;
+            };
+            return option;
+        });
+        return list;
+    },
+
 });
 
 Template.shipmentDetails.onRendered(function() {
@@ -41,6 +77,7 @@ Template.shipmentDetails.onRendered(function() {
 });
 Template.shipmentDetails.onRendered(function() {
     // update_ui_hooks();
+    $('.dropdown').dropdown();
 
 });
 
