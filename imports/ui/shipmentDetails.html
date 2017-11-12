@@ -48,7 +48,6 @@
       </form>
     </div>
     {{#if show_history}}
-    {{#with ../history}}
     <div class="eight wide column">
       <table class="ui table">
         <thead>
@@ -59,45 +58,16 @@
           </tr>
         </thead>
         <tbody>
+    {{#each act in ../history}}
           <tr>
-            <td>created</td>
-            <td>{{created.time}}{{#unless created.time}}-{{/unless}}</td>
-            <td>{{created.user}}{{#unless created.user}}-{{/unless}}</td>
+            <td>{{act.status}}</td>
+            <td>{{act.time}}</td>
+            <td>{{act.user}}</td>
           </tr>
-          <tr>
-            <td>arrived</td>
-            <td>{{arrived.time}}{{#unless arrived.time}}-{{/unless}}</td>
-            <td>{{arrived.user}}{{#unless arrived.user}}-{{/unless}}</td>
-          </tr>
-          <tr>
-            <td>entered</td>
-            <td>{{entered.time}}{{#unless entered.time}}-{{/unless}}</td>
-            <td>{{entered.user}}{{#unless entered.user}}-{{/unless}}</td>
-          </tr>
-          <tr>
-            <td>loaded</td>
-            <td>{{loaded.time}}{{#unless loaded.time}}-{{/unless}}</td>
-            <td>{{loaded.user}}{{#unless loaded.user}}-{{/unless}}</td>
-          </tr>
-          <tr>
-            <td>unloaded</td>
-            <td>{{unloaded.time}}{{#unless unloaded.time}}-{{/unless}}</td>
-            <td>{{unloaded.user}}{{#unless unloaded.user}}-{{/unless}}</td>
-          </tr>
-          <tr>
-            <td>documented</td>
-            <td>{{documented.time}}{{#unless documented.time}}-{{/unless}}</td>
-            <td>{{documented.user}}{{#unless documented.user}}-{{/unless}}</td>
-          </tr>
-          <tr>
-            <td>left</td>
-            <td>{{left.time}}{{#unless left.time}}-{{/unless}}</td>
-            <td>{{left.user}}{{#unless left.user}}-{{/unless}}</td>
-          </tr>
+    {{/each}}
         </tbody>
       </table>
     </div>
-    {{/with}}
     {{/if}}
   </div>
   </template>

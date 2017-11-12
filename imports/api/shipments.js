@@ -9,67 +9,29 @@ export const Shipments = new Mongo.Collection('shipments');
 
 export function select_created() {
     return Shipments.find({
-        "history.created": {
-            $exists: true
-        },
-        "history.arrived": {
-            $exists: false
-        },
-        "history.archived": {
-            $exists: false
-        },
+        "status": "created",
     });
 };
 
 
 export function select_arrived() {
     return Shipments.find({
-        "history.arrived": {
-            $exists: true
-        },
-        "history.entered": {
-            $exists: false
-        },
-        "history.archived": {
-            $exists: false
-        },
+        "status": "arrived",
     });
 };
 
 export function select_waiting_loading() {
     return Shipments.find({
-        "history.entered": {
-            $exists: true
-        },
-        "history.loaded": {
-            $exists: false
-        },
-        "history.unloaded": {
-            $exists: false
-        },
-        "history.archived": {
-            $exists: false
-        },
+        "status": "entered",
         shipment_type: {
             $in: ["TC_truck", "TC_container", "DRX_truck", "DRX_container", ]
-        }
+        },
     });
 };
 
 export function select_waiting_unloading() {
     return Shipments.find({
-        "history.entered": {
-            $exists: true
-        },
-        "history.loaded": {
-            $exists: false
-        },
-        "history.unloaded": {
-            $exists: false
-        },
-        "history.archived": {
-            $exists: false
-        },
+        "status": "entered",
         shipment_type: {
             $in: ["WR", "ISC_container", "Other", "", ]
         }
@@ -78,15 +40,7 @@ export function select_waiting_unloading() {
 
 export function select_waiting_docs_TC() {
     return Shipments.find({
-        "history.loaded": {
-            $exists: true
-        },
-        "history.documented": {
-            $exists: false
-        },
-        "history.archived": {
-            $exists: false
-        },
+        "status": "loaded",
         shipment_type: {
             $in: ["TC_truck", "TC_container", ]
         }
@@ -95,15 +49,7 @@ export function select_waiting_docs_TC() {
 
 export function select_waiting_docs_DRX() {
     return Shipments.find({
-        "history.loaded": {
-            $exists: true
-        },
-        "history.documented": {
-            $exists: false
-        },
-        "history.archived": {
-            $exists: false
-        },
+        "status": "loaded",
         shipment_type: {
             $in: ["DRX_truck", "DRX_container", ]
         }
@@ -113,25 +59,16 @@ export function select_waiting_docs_DRX() {
 export function select_leaving() {
     return Shipments.find({
         $or: [{
-            "history.documented": {
-                $exists: true
-            }
+            "status": "documented",
         }, {
-            "history.unloaded": {
-                $exists: true
-            }
-        }],
-        "history.archived": {
-            $exists: false
-        },
+            "status": "unloaded",
+        }]
     });
 };
 
 export function select_archived() {
     return Shipments.find({
-        "history.archived": {
-            $exists: true
-        },
+        "status": "archived",
     });
 };
 
@@ -157,12 +94,12 @@ Meteor.methods({
                 driver_name,
                 shipment_type,
                 expected_arrival_time,
-                history: {
-                    created: {
-                        time: new Date(),
-                        user: Meteor.user().username,
-                    }
-                },
+                status: "created",
+                history: [{
+                    status: "created",
+                    time: new Date(),
+                    user: Meteor.user().username,
+                }, ]
             });
         } else {
             Shipments.insert({
@@ -172,12 +109,12 @@ Meteor.methods({
                 shipment_type,
                 expected_arrival_time,
                 attached_files,
-                history: {
-                    created: {
-                        time: new Date(),
-                        user: Meteor.user().username,
-                    }
-                },
+                status: "created",
+                history: [{
+                    status: "created",
+                    time: new Date(),
+                    user: Meteor.user().username,
+                }, ]
             });
 
         }
@@ -187,13 +124,20 @@ Meteor.methods({
 
     'shipment.action' (shipmentId, action_name) {
         var hist = {};
-        hist["history." + action_name] = {
+        hist = {
+            "status": action_name,
             "time": new Date(),
             "user": Meteor.user().username,
         };
+        // hist["current_status"] = action_name;
         // console.log(hist);
         Shipments.update(shipmentId, {
-            $set: hist
+            $set: {
+                status: action_name
+            },
+            $push: {
+                history: hist
+            }
         });
 
         if (action_name == "left" || action_name == "cancelled") {
@@ -206,18 +150,5 @@ Meteor.methods({
 if (Meteor.isServer) {
     Meteor.publish('shipments.all', function() {
         return Shipments.find();
-    });
-    Meteor.publish('shipments.arrived', function() {
-        return Shipments.find({
-            "history.arrived": {
-                $exists: true
-            },
-            "history.entered": {
-                $exists: false
-            },
-            "history.archived": {
-                $exists: false
-            },
-        });
     });
 };
