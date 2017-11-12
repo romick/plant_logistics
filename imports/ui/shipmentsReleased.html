@@ -1,0 +1,8 @@
+<!--  -->
+<template name="shipmentsReleased">
+<!-- Form for loaded & unloaded trucks    -->
+<div class="ui" data-tab="shipment-released">
+	{{> truckTable header="Drivers waiting TC docs" shipments=shipments_waiting_docs_TC actions=availableActions}}
+	{{> truckTable header="Drivers waiting DRX docs" shipments=shipments_waiting_docs_DRX actions=availableActions}}
+</div>
+</template>

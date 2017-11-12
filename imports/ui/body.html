@@ -1,4 +1,18 @@
 <body>
+  <!--  -->
+  <div class="ui eight item stackable menu">
+    <div class="ui container">
+      {{#each item in menuContent}}
+      <a class="item" data={{item.data}} href={{item.link}}>{{item.text}}</a>
+      {{/each}}
+      <div class="item">
+        {{> loginButtons}}
+      </div>
+    </div>
+  </div>
+  <!--  -->
+        {{App_body}}
+<!-- 
   <div class="ui fluid container">
     <div class="ui grid">
       <div class="one wide column"></div>
@@ -14,7 +28,6 @@
     <div class="ui grid">
       <div class="one wide column"></div>
       <div class="one wide column">
-        {{> loginButtons}}
       </div>
       <div class="twelve wide column">
         <div class="ui top attached tabular menu">
@@ -28,38 +41,31 @@
           <a class="item" data-tab="shipment-leaving">Leaving<div class="ui pink circular label">{{count_leaving}}</div></a>
           <a class="item" data-tab="shipment-archived">Archive</a>
         </div>
-        <!-- Form for created but not arrived shipments    -->
-        
-        {{#if isInRole 'add-shipments'}}
-        <div class="ui bottom attached tab segment" data-tab="new-shipment">
-          {{> shipmentDetails button_add=1}}
-        </div>
-        {{/if}}
-        <!--  -->
-        <div class="ui bottom attached tab segment active" data-tab="shipment-ontheway">
-          {{> truckTable header="Trucks on the way" shipments=shipments_created actions=(availableActions 'ontheway') }}
-        </div>
-        <!-- Form for arrived shipments    -->
-        <div class="ui bottom attached tab segment" data-tab="shipment-arrived">
-          {{> truckTable header="Arrived trucks" shipments=shipments_arrived actions=(availableActions 'arrived')}}
-        </div>
-        <!-- Form for entered trucks    -->
-        <div class="ui bottom attached tab segment" data-tab="shipment-entered">
-          {{> truckTable header="Trucks waiting loading" shipments=shipments_waiting_loading actions=(availableActions 'waiting_loading')}}
-          {{> truckTable header="Trucks waiting unloading" shipments=shipments_waiting_unloading actions=(availableActions 'waiting_unloading')}}
-        </div>
-        <!-- Form for entered trucks    -->
-        <div class="ui bottom attached tab segment" data-tab="shipment-released">
-          {{> truckTable header="Drivers waiting TC docs" shipments=shipments_waiting_docs_TC actions=(availableActions 'released')}}
-          {{> truckTable header="Drivers waiting DRX docs" shipments=shipments_waiting_docs_DRX actions=(availableActions 'released')}}
-        </div>
-        <div class="ui bottom attached tab segment" data-tab="shipment-leaving">
-          {{> truckTable header="Trucks leaving the plant" shipments=shipments_leaving actions=(availableActions 'leaving')}}
-        </div>
-        <div class="ui bottom attached tab segment" data-tab="shipment-archived">
-          {{> truckTable header="Archived shipments" shipments=shipments_archived}}
-        </div>
+        {{> shipmentsAdd}}
+        {{> shipmentsOnTheWay}}
+        {{> shipmentsArrived}}
+        {{> shipmentsEntered}}
+        {{> shipmentsReleased}}
+        {{> shipmentsLeaving}}
+        {{> shipmentsArchived}}
+        <p></p>
       </div>
     </div>
   </div>
+ -->
 </body>
+<template name="shipmentsAdd">
+<!-- Form for created but not arrived shipments    -->
+{{#if isInRole 'add-shipments'}}
+<div class="ui" data-tab="new-shipment">
+  {{> shipmentDetails button_add=1}}
+</div>
+{{/if}}
+</template>
+<!--  -->
+<!--  -->
+<template name="App_body">
+<div class="ui container" >
+  {{> Template.dynamic template=main}}
+</div>
+</template>

@@ -1,6 +1,10 @@
 import {
     Template
 } from 'meteor/templating';
+
+import './fileList.js';
+import './upload.js';
+
 import './groupedShipmentsList.html';
 
 Template.groupedShipmentsList.helpers({

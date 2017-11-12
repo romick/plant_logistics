@@ -7,6 +7,136 @@ import {
 
 export const Shipments = new Mongo.Collection('shipments');
 
+export function select_created() {
+    return Shipments.find({
+        "history.created": {
+            $exists: true
+        },
+        "history.arrived": {
+            $exists: false
+        },
+        "history.archived": {
+            $exists: false
+        },
+    });
+};
+
+
+export function select_arrived() {
+    return Shipments.find({
+        "history.arrived": {
+            $exists: true
+        },
+        "history.entered": {
+            $exists: false
+        },
+        "history.archived": {
+            $exists: false
+        },
+    });
+};
+
+export function select_waiting_loading() {
+    return Shipments.find({
+        "history.entered": {
+            $exists: true
+        },
+        "history.loaded": {
+            $exists: false
+        },
+        "history.unloaded": {
+            $exists: false
+        },
+        "history.archived": {
+            $exists: false
+        },
+        shipment_type: {
+            $in: ["TC_truck", "TC_container", "DRX_truck", "DRX_container", ]
+        }
+    });
+};
+
+export function select_waiting_unloading() {
+    return Shipments.find({
+        "history.entered": {
+            $exists: true
+        },
+        "history.loaded": {
+            $exists: false
+        },
+        "history.unloaded": {
+            $exists: false
+        },
+        "history.archived": {
+            $exists: false
+        },
+        shipment_type: {
+            $in: ["WR", "ISC_container", "Other", "", ]
+        }
+    });
+};
+
+export function select_waiting_docs_TC() {
+    return Shipments.find({
+        "history.loaded": {
+            $exists: true
+        },
+        "history.documented": {
+            $exists: false
+        },
+        "history.archived": {
+            $exists: false
+        },
+        shipment_type: {
+            $in: ["TC_truck", "TC_container", ]
+        }
+    });
+};
+
+export function select_waiting_docs_DRX() {
+    return Shipments.find({
+        "history.loaded": {
+            $exists: true
+        },
+        "history.documented": {
+            $exists: false
+        },
+        "history.archived": {
+            $exists: false
+        },
+        shipment_type: {
+            $in: ["DRX_truck", "DRX_container", ]
+        }
+    });
+};
+
+export function select_leaving() {
+    return Shipments.find({
+        $or: [{
+            "history.documented": {
+                $exists: true
+            }
+        }, {
+            "history.unloaded": {
+                $exists: true
+            }
+        }],
+        "history.archived": {
+            $exists: false
+        },
+    });
+};
+
+export function select_archived() {
+    return Shipments.find({
+        "history.archived": {
+            $exists: true
+        },
+    });
+};
+
+
+
 Meteor.methods({
     'shipments.add' (sh) {
 
@@ -77,4 +207,17 @@ if (Meteor.isServer) {
     Meteor.publish('shipments.all', function() {
         return Shipments.find();
     });
-}
+    Meteor.publish('shipments.arrived', function() {
+        return Shipments.find({
+            "history.arrived": {
+                $exists: true
+            },
+            "history.entered": {
+                $exists: false
+            },
+            "history.archived": {
+                $exists: false
+            },
+        });
+    });
+};

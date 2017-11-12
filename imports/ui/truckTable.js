@@ -1,6 +1,9 @@
 import {
     Template
 } from 'meteor/templating';
+
+import './shipmentsList.js';
+
 import './truckTable.html';
 
 Template.truckTable.helpers({

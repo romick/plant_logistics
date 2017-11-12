@@ -1,0 +1,8 @@
+<!--  -->
+<template name="shipmentsEntered">
+<!-- Form for entered trucks    -->
+<div class="ui" data-tab="shipment-entered">
+	{{> truckTable header="Trucks waiting loading" shipments=shipments_waiting_loading actions=(availableActions 'waiting_loading')}}
+	{{> truckTable header="Trucks waiting unloading" shipments=shipments_waiting_unloading actions=(availableActions 'waiting_unloading')}}
+</div>
+</template>
