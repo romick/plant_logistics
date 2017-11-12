@@ -28,6 +28,4 @@ alanning:roles
 accounts-base@1.4.0
 ostrio:files
 juliancwirko:s-alert
-jcbernack:reactive-aggregate
 meteorhacks:aggregate
-matteodem:server-session

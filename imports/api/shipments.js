@@ -77,6 +77,28 @@ export function select_archived() {
     });
 };
 
+function refresh_totals() {
+    if (Meteor.isServer) {
+        const totals = Shipments.aggregate([{
+            $group: {
+                _id: "$status",
+                count: {
+                    $sum: 1
+                }
+            }
+        }]);
+
+        _.each(totals, function(e) {
+            ShipmentsTotals.upsert({
+                _id: e._id
+            }, {
+                $set: {
+                    count: e.count
+                }
+            });
+        });
+    };
+};
 
 
 Meteor.methods({
@@ -123,8 +145,7 @@ Meteor.methods({
             });
 
         }
-
-
+        refresh_totals();
     },
 
     'shipment.action' (shipmentId, action_name) {
@@ -145,33 +166,7 @@ Meteor.methods({
             }
         });
 
-        if (Meteor.isServer) {
-            //update totals 
-            const totals = Shipments.aggregate([{
-                $group: {
-                    _id: "$status",
-                    count: {
-                        $sum: 1
-                    }
-                }
-            }]);
-
-            // console.log(totals);
-
-            _.each(totals, function(e) {
-                ShipmentsTotals.upsert({
-                    _id: e._id
-                }, {
-                    $set: {
-                        count: e.count
-                    }
-                });
-            });
-
-
-            // console.log(JSON.stringify(totals));
-        };
-        // ServerSession.set("statuses", totals);
+        refresh_totals();
 
         if (action_name == "left" || action_name == "cancelled") {
             Meteor.call('shipment.action', shipmentId, "archived")
