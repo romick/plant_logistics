@@ -5,6 +5,11 @@ import {
     Meteor
 } from 'meteor/meteor';
 
+import {
+    ShipmentsTotals
+} from '../api/countShipments.js';
+
+
 export const Shipments = new Mongo.Collection('shipments');
 
 export function select_created() {
@@ -139,6 +144,34 @@ Meteor.methods({
                 history: hist
             }
         });
+
+        if (Meteor.isServer) {
+            //update totals 
+            const totals = Shipments.aggregate([{
+                $group: {
+                    _id: "$status",
+                    count: {
+                        $sum: 1
+                    }
+                }
+            }]);
+
+            // console.log(totals);
+
+            _.each(totals, function(e) {
+                ShipmentsTotals.upsert({
+                    _id: e._id
+                }, {
+                    $set: {
+                        count: e.count
+                    }
+                });
+            });
+
+
+            // console.log(JSON.stringify(totals));
+        };
+        // ServerSession.set("statuses", totals);
 
         if (action_name == "left" || action_name == "cancelled") {
             Meteor.call('shipment.action', shipmentId, "archived")

@@ -3,6 +3,7 @@ import {
 } from 'meteor/meteor';
 import '../imports/api/shipments.js';
 import '../imports/api/attachments.js';
+import '../imports/api/countShipments.js';
 import '../imports/startup/server';
 
 // Meteor.startup(() => {
