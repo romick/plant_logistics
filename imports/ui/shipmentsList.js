@@ -22,8 +22,9 @@ Template.shipmentsList.helpers({
 
 Template.shipmentsList.events({
     'click .shipment-action' (e) {
-        Meteor.call('shipment.action', this._id, e.target.attributes.data.value);
-        console.log("action triggered");
+        const action = e.target.attributes.data.value;
+        Meteor.call('shipment.action', this._id, action);
+        sAlert.success(`Shipment changed status to ${action}!`);
     },
 
 

@@ -21,7 +21,6 @@ FlowRouter.route('/shipments/:template', {
     name: 'Lists.show',
     action(params) {
         const template = 'shipments' + params.template;
-        console.log(template);
         BlazeLayout.render('App_body', {
             main: template
         });

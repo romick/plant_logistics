@@ -62,6 +62,8 @@ Template.shipmentDetails.events({
         }
 
         Meteor.call('shipments.add', sh);
+
+        sAlert.success("Added shipment!");
         // Clear form
         target.sh_type.value = '';
         target.text.value = '';
