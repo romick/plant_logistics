@@ -31,6 +31,12 @@ Array.prototype.clean = function(deleteValue) {
     return this;
 };
 
+Template.body.events({
+    'click .linker' () {
+        $('.ui.sidebar').sidebar('hide');
+    },
+});
+
 Template.body.helpers({
 
     count_ontheway() {
@@ -121,7 +127,13 @@ Template.body.onCreated(function() {
     // this.state = new ReactiveDict();
     Meteor.subscribe('shipments.all');
     Meteor.subscribe('shipments.totals');
-
+    BlazeLayout.setRoot('div.blazeRoot');
     // Meteor.subscribe('shipmentsTotalsByState');
     // console.log(ServerSession.get("statuses"));
 });
+
+Template.body.rendered = function() {
+    // body...
+    $('.ui.sidebar').sidebar('attach events', '.toc');
+    $('.ui.sidebar').sidebar('hide');
+};
