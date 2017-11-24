@@ -88,7 +88,33 @@ function refresh_totals() {
             }
         }]);
 
-        _.each(totals, function(e) {
+        const required_statuses = [
+            "created",
+            "arrived",
+            "entered",
+            "loaded",
+            "unloaded",
+            "documented",
+            "left",
+            "archived",
+        ];
+
+        const new_totals = _.union(
+            _.map(
+                _.difference(
+                    required_statuses,
+                    _.pluck(totals, '_id')
+                ),
+                (v) => {
+                    return ({
+                        _id: v,
+                        count: 0,
+                    });
+                }
+            ), totals
+        );
+
+        _.each(new_totals, function(e) {
             ShipmentsTotals.upsert({
                 _id: e._id
             }, {
