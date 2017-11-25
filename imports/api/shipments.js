@@ -136,6 +136,7 @@ Meteor.methods({
         const text = sh.text;
         const truck_plate = sh.truck_plate;
         const driver_name = sh.driver_name;
+        const driver_doc = sh.driver_doc;
         const shipment_type = sh.shipment_type;
         const expected_arrival_time = sh.expected_arrival_time;
         const attached_files = sh.attached_files;
@@ -145,6 +146,7 @@ Meteor.methods({
                 text,
                 truck_plate,
                 driver_name,
+                driver_doc,
                 shipment_type,
                 expected_arrival_time,
                 status: "created",
@@ -159,6 +161,7 @@ Meteor.methods({
                 text,
                 truck_plate,
                 driver_name,
+                driver_doc,
                 shipment_type,
                 expected_arrival_time,
                 attached_files,

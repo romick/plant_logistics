@@ -10,19 +10,13 @@
           {{#each option in (shipmentTypesSelector ../shipment_type)}}
           <option value={{option.type}} selected={{option.selected}}>{{option.text}}</option>
           {{/each}}
-          <!--           <option value="">Select...</option>
-          <option value="WR">Wire rod</option>
-          <option value="ISC_container">ISC in container</option>
-          <option value="TC_truck">Tire cord in truck</option>
-          <option value="TC_container">Tire cord in container</option>
-          <option value="DRX_truck">Dramix in truck</option>
-          <option value="DRX_container">Dramix in container</option>
-          <option value="Other">Other</option> -->
         </select></div>
         <br>
         <div class="field"><div class="ui labeled fluid input"><div class="ui label">Plate:</div><input class="ui input" type="text" name="plate" placeholder="Type  here..." value={{../truck_plate}} /></div></div>
         <br>
         <div class="field"><div class="ui labeled fluid input"><div class="ui label">Driver:</div><input class="ui input" type="text" name="driver" placeholder="Type  here..." value={{../driver_name}} /></div></div>
+        <br>
+        <div class="field"><div class="ui labeled fluid input"><div class="ui label">Passport:</div><input class="ui input" type="text" name="driver_doc" placeholder="Type  here..." value={{../driver_doc}} /></div></div>
         <br>
         <div class="field"><div class="ui labeled input"><div class="ui label">Comment:</div><input class="ui input" type="text" name="text" placeholder="Type  here..." value={{../text}} /></div></div>
         <br>

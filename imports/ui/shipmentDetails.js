@@ -93,6 +93,7 @@ Template.shipmentDetails.events({
             text: target.text.value,
             truck_plate: target.plate.value,
             driver_name: target.driver.value,
+            driver_doc: target.driver_doc.value,
             shipment_type: target.sh_type.value,
             attached_files: target.attached_files.value.split(" ").clean(""),
             expected_arrival_time: target.expected_arrival_time.value,
