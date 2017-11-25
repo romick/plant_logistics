@@ -162,6 +162,7 @@ Meteor.methods({
             Shipments.insert({
                 text,
                 truck_company,
+                truck_plate,
                 driver_name,
                 driver_doc,
                 shipment_type,
