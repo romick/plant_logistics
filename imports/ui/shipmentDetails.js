@@ -100,19 +100,25 @@ Template.shipmentDetails.events({
             expected_arrival_time: target.expected_arrival_time.value,
         }
 
-        Meteor.call('shipments.add', sh);
+        Meteor.call('shipments.add', sh, (error) => {
+            if (error) {
+                sAlert.error(error.reason);
+            } else {
+                sAlert.success("Added shipment!");
+                // Clear form
+                target.sh_type.value = '';
+                target.text.value = '';
+                target.company.value = '';
+                target.plate.value = '';
+                target.driver.value = '';
+                target.driver_doc.value = '';
+                target.expected_arrival_time.value = '';
+                target.attached_files.value = '';
+                $('#fileInput').trigger($.Event('clean_tempUploaded', {}));
+            }
+        });
 
-        sAlert.success("Added shipment!");
-        // Clear form
-        target.sh_type.value = '';
-        target.text.value = '';
-        target.company.value = '';
-        target.plate.value = '';
-        target.driver.value = '';
-        target.driver_doc.value = '';
-        target.expected_arrival_time.value = '';
-        target.attached_files.value = '';
-        $('#fileInput').trigger($.Event('clean_tempUploaded', {}));
+
 
 
     },

@@ -9,8 +9,13 @@ import {
     ShipmentsTotals
 } from '../api/countShipments.js';
 
+import {
+    Schemas
+} from './schemas.js';
+
 
 export const Shipments = new Mongo.Collection('shipments');
+Shipments.attachSchema(Schemas.Shipment)
 
 export function select_created() {
     return Shipments.find({
@@ -157,6 +162,12 @@ Meteor.methods({
                     time: new Date(),
                     user: Meteor.user().username,
                 }, ]
+            }, (error, result) => {
+                if (error) {
+                    throw new Meteor.Error('validation_error', error.message);
+                };
+
+
             });
         } else {
             Shipments.insert({
@@ -174,6 +185,8 @@ Meteor.methods({
                     time: new Date(),
                     user: Meteor.user().username,
                 }, ]
+            }, (error, result) => {
+                throw new Meteor.Error('validation_error', error.message);
             });
 
         }
@@ -196,6 +209,8 @@ Meteor.methods({
             $push: {
                 history: hist
             }
+        }, (error, result) => {
+            throw new Meteor.Error('validation_error', error.message);
         });
 
         refresh_totals();

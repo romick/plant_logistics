@@ -23,8 +23,13 @@ Template.shipmentsList.helpers({
 Template.shipmentsList.events({
     'click .shipment-action' (e) {
         const action = e.target.attributes.data.value;
-        Meteor.call('shipment.action', this._id, action);
-        sAlert.success(`Shipment changed status to ${action}!`);
+        Meteor.call('shipment.action', this._id, action, (error) => {
+            if (error) {
+                sAlert.error(error.reason);
+            } else {
+                sAlert.success(`Shipment changed status to ${action}!`);
+            }
+        });
     },
 
 
