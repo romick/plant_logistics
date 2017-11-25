@@ -20,10 +20,10 @@
   </thead>
   <tbody>
     {{> shipmentsList}}
-    <!--
-    TODO: add grouping per expected arrival
-    {{> groupedShipmentsList groups=(selectUnique shipments 'expected_arrival_time') groupBy='expected_arrival_time' groupByText="Expected arrival date: "}}
-    -->
+    
+    <!-- TODO: add grouping per expected arrival -->
+<!--     {{> groupedShipmentsList groups=(selectUnique shipments 'expected_arrival_time') groupBy='expected_arrival_time' groupByText="Expected arrival date: "}}
+ -->    
   </tbody>
 </table>
 </template>

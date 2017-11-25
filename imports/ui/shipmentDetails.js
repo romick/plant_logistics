@@ -91,6 +91,7 @@ Template.shipmentDetails.events({
         const target = event.target;
         const sh = {
             text: target.text.value,
+            truck_company: target.company.value,
             truck_plate: target.plate.value,
             driver_name: target.driver.value,
             driver_doc: target.driver_doc.value,
@@ -105,8 +106,10 @@ Template.shipmentDetails.events({
         // Clear form
         target.sh_type.value = '';
         target.text.value = '';
+        target.company.value = '';
         target.plate.value = '';
         target.driver.value = '';
+        target.driver_doc.value = '';
         target.expected_arrival_time.value = '';
         target.attached_files.value = '';
         $('#fileInput').trigger($.Event('clean_tempUploaded', {}));

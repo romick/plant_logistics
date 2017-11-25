@@ -134,6 +134,7 @@ Meteor.methods({
         // console.log(sh);
 
         const text = sh.text;
+        const truck_company = sh.truck_company;
         const truck_plate = sh.truck_plate;
         const driver_name = sh.driver_name;
         const driver_doc = sh.driver_doc;
@@ -144,6 +145,7 @@ Meteor.methods({
         if (attached_files.length < 1) {
             Shipments.insert({
                 text,
+                truck_company,
                 truck_plate,
                 driver_name,
                 driver_doc,
@@ -159,7 +161,7 @@ Meteor.methods({
         } else {
             Shipments.insert({
                 text,
-                truck_plate,
+                truck_company,
                 driver_name,
                 driver_doc,
                 shipment_type,

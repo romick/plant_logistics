@@ -12,7 +12,7 @@ Template.groupedShipmentsList.helpers({
         var selector = {};
         selector[field] = value;
         console.log(selector);
-        console.log(collection.fetch().find(selector));
+        // console.log(collection.fetch().find(selector));
     },
 
 });

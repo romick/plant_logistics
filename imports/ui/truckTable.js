@@ -3,6 +3,7 @@ import {
 } from 'meteor/templating';
 
 import './shipmentsList.js';
+import './groupedShipmentsList.js';
 
 import './truckTable.html';
 
