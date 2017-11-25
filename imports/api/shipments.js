@@ -186,7 +186,9 @@ Meteor.methods({
                     user: Meteor.user().username,
                 }, ]
             }, (error, result) => {
-                throw new Meteor.Error('validation_error', error.message);
+                if (error) {
+                    throw new Meteor.Error('validation_error', error.message);
+                }
             });
 
         }
@@ -210,7 +212,9 @@ Meteor.methods({
                 history: hist
             }
         }, (error, result) => {
-            throw new Meteor.Error('validation_error', error.message);
+            if (error) {
+                throw new Meteor.Error('validation_error', error.message);
+            }
         });
 
         refresh_totals();
