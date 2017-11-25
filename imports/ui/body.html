@@ -3,24 +3,6 @@
   {{> sAlert}}
   <!--  -->
   <!--  -->
-  <div class="ui eight item stackable wide menu">
-    <div class="ui container">
-      {{#each item in menuContent}}
-      <a class="item" data={{item.data}} href={{item.link}}>{{item.text}}
-        {{#if item.totals}}
-        <div class="ui white circular label">{{item.totals}}</div>
-        {{/if}}
-      </a>
-      {{/each}}
-      <div class="item">
-        {{> loginButtons}}
-      </div>
-    </div>
-  </div>
-  <!--  -->
-  <div class="ui fixed toc menu">
-    <a class="item"><i class="sidebar icon"></i></a>
-  </div>
   <div class="ui inverted fixed vertical sidebar menu">
     {{#each item in menuContent}}
     <a class="item linker" href={{item.link}}>{{item.text}}
@@ -29,12 +11,39 @@
       {{/if}}
     </a>
     {{/each}}
+    <div class="item">
+      {{> loginButtons}}
+    </div>
   </div>
   <!--  -->
-  <div class="pusher"><div class="blazeRoot">
-    {{App_body}}
-  </div></div>
-  
+  <div class="pusher">
+    <div class="ui container">
+      <div class="ui fixed toc menu">
+        <a class="item"><i class="sidebar icon"></i></a>
+      </div>
+      <div class="ui eight item stackable computer menu">
+        <div class="ui container">
+          {{#each item in menuContent}}
+          <a class="item" data={{item.data}} href={{item.link}}>{{item.text}}
+            {{#if item.totals}}
+            <div class="ui white circular label">{{item.totals}}</div>
+            {{/if}}
+          </a>
+          {{/each}}
+          <div class="item">
+            {{> loginButtons}}
+          </div>
+        </div>
+      </div>
+      <!--  -->
+      <div class="pusher">
+        <div class="blazeRoot">
+          {{App_body}}
+        </div>
+      </div>
+    </div>
+    <!--  -->
+  </div>
 </body>
 <template name="shipmentsAdd">
 <!-- Form for created but not arrived shipments    -->
@@ -48,6 +57,6 @@
 <!--  -->
 <template name="App_body">
 <div class="ui container" >
-    {{> Template.dynamic template=main}}
+  {{> Template.dynamic template=main}}
 </div>
 </template>
